@@ -3,6 +3,7 @@ import "./Search.css";
 
 import { HiOutlinePlus, HiOutlineMinusSm } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import CalendarComponent from "../Calendar/CalendarComponent";
 
 function Search() {
   const navigate = useNavigate();
@@ -12,10 +13,12 @@ function Search() {
   const [passengersOpen, SetPassengersOpen] = useState(false);
   const [classes, SetClasses] = useState("Class");
   const [clssOpen, setClassOpen] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
   const [totalPasssengers,SetTotalPassengers]=useState(0)
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
   useEffect(()=>{
     SetTotalPassengers(adult+child)
+    
   },[adult,child])
   return (
     <div className="search-container w-full h-fit  md:px-20 py-10 flex justify-center items-center flex-wrap gap-[10px] relative">
@@ -29,20 +32,27 @@ function Search() {
         placeholder="Arival Airport"
         type="text"
       />
-      <div className="hover:border-2 flex justify-center items-center w-[80%] md:w-[300px] h-[50px] rounded bg-white">
-        Date
+      <div onClick={()=>{
+        setDateOpen(true)
+        setClassOpen(false)
+        SetPassengersOpen(false)
+      }} className="hover:border-2 flex justify-center items-center w-[80%] md:w-[300px] h-[50px] rounded bg-white relative">
+        {dateOpen && <CalendarComponent setSelectedDate={setSelectedDate} selectedDate={selectedDate} setDateOpen={setDateOpen}/>}
+      {selectedDate.toLocaleDateString()}
       </div>
 
       <div
         onClick={() => {
           SetPassengersOpen(true);
+          setDateOpen(false)
+        setClassOpen(false)
         }}
         className="flex justify-center items-center w-[80%] md:w-[300px] h-[50px] rounded bg-white relative"
       >
     { totalPasssengers}    Passengers
         {/* passengers modal table */}
         {passengersOpen && (
-          <div className="passengers w-[90%] md:w-1/2 bg-white">
+          <div className="passengers w-[90%] md:w-1/2 bg-white absolute">
             Passengers
             <hr />
             <div className="flex gap-2 justify-center items-center">
@@ -95,44 +105,55 @@ function Search() {
       </div>
       <div
         onClick={() => {
-          setClassOpen(!clssOpen);
+          setClassOpen(true);
+          SetPassengersOpen(false);
+          setDateOpen(false)
+       
         }}
         className="hover:border-2 flex justify-center items-center w-[80%] md:w-[300px] h-[50px] rounded bg-white relative"
       >
         {classes}
 
         {clssOpen && (
-          <div className="class">
+          <div className="class absolute">
             classes
             <hr />
             <div
-              onClick={() => {
+              onClick={(e) => {
                 SetClasses("Economy Class");
-                setClassOpen(!clssOpen);
+                setClassOpen(false);
+                SetPassengersOpen(false)
+                e.stopPropagation()
               }}
             >
               Economy Class
             </div>
             <div
-              onClick={() => {
+              onClick={(e) => {
                 SetClasses("Premium Economy");
-                setClassOpen(!clssOpen);
+                setClassOpen(false);
+                SetPassengersOpen(false)
+                e.stopPropagation()
               }}
             >
               Premium Economy{" "}
             </div>
             <div
-              onClick={() => {
+              onClick={(e) => {
                 SetClasses("Bussines Class");
-                setClassOpen(!clssOpen);
+                setClassOpen(false);
+                SetPassengersOpen(false)
+                e.stopPropagation()
               }}
             >
               Bussines Class
             </div>
             <div
-              onClick={() => {
+              onClick={(e) => {
                 SetClasses("First Class");
-                setClassOpen(!clssOpen);
+                setClassOpen(false);
+                SetPassengersOpen(false)
+                e.stopPropagation()
               }}
             >
               First Class
@@ -149,6 +170,10 @@ function Search() {
       >
         Search Flights
       </div>
+
+
+         
+
     </div>
   );
 }
